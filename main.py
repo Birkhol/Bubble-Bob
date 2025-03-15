@@ -7,6 +7,7 @@ from player import Player
 from bubble import Bubble
 import os
 from constants import *
+from gameState import level
 
 # Initialize Pygame
 pygame.init()
@@ -28,8 +29,6 @@ font = pygame.font.Font(None, 36)
 BUBBLE_EVENT = pygame.USEREVENT + 1
 pygame.time.set_timer(BUBBLE_EVENT, 1000)  # Spawn a bubble every second
 allowed_spawn_areas = [(90, SCREEN_WIDTH - 80 - 50)]
-global level
-level = 1
 
 def draw_hearts(screen, hp, x_offset):
     for i in range(hp):
@@ -40,6 +39,61 @@ def show_level2_screen():
     screen.blit(background_image, (0, 0))  # Load and display the background image
     title_text = font.render("SvenOl AI: You won the battle, but not the war!", True, BLACK)
     continue_text = font.render("Press SPACE to continue to Level 2.", True, BLACK)
+    quit_text = font.render("Press Q to quit.", True, BLACK)
+
+    # Draw text on the screen
+    screen.blit(title_text, (SCREEN_WIDTH // 2 - 300, SCREEN_HEIGHT // 2 - 100))
+    screen.blit(continue_text, (SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT // 2 - 50))
+    screen.blit(quit_text, (SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT // 2))
+
+    pygame.display.flip()  # Update the display
+
+    # Wait for SPACE or Q key press
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:  # Continue to Level 2
+                    waiting = False
+                elif event.key == pygame.K_q:  # Quit the game
+                    pygame.quit()
+                    sys.exit()
+def show_level3_screen():
+    """Displays the screen before Level 3 starts."""
+    screen.blit(background_image, (0, 0))  # Load and display the background image
+    title_text = font.render("SvenOl AI: You are impressive, but you are not ready for my next form!", True, BLACK)
+    continue_text = font.render("Press SPACE to continue to Level 3.", True, BLACK)
+    quit_text = font.render("Press Q to quit.", True, BLACK)
+
+    # Draw text on the screen
+    screen.blit(title_text, (SCREEN_WIDTH // 2 - 300, SCREEN_HEIGHT // 2 - 100))
+    screen.blit(continue_text, (SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT // 2 - 50))
+    screen.blit(quit_text, (SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT // 2))
+
+    pygame.display.flip()  # Update the display
+
+        # Wait for SPACE or Q key press
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:  # Continue to Level 2
+                    waiting = False
+                elif event.key == pygame.K_q:  # Quit the game
+                    pygame.quit()
+                    sys.exit()
+
+def show_level4_screen():
+    """Displays the screen before Level 4 starts."""
+    screen.blit(background_image, (0, 0))  # Load and display the background image
+    title_text = font.render("SvenOl AI: YOU ARE DOOMED!", True, BLACK)
+    continue_text = font.render("Press SPACE to continue to Level 4.", True, BLACK)
     quit_text = font.render("Press Q to quit.", True, BLACK)
 
     # Draw text on the screen
@@ -197,8 +251,24 @@ def stop_game(winner=None):
         # Transition to Level 2
         show_level2_screen()  # Display Level 2 transition screen
         blade_guy.hp = 3  # Restore Blade Guy's HP
-        blade_guy.increase_speed()  # Activate speed boost for Level 2
         level += 1  # Increment the level
+        blade_guy.increase_speed(level)  # Activate speed boost for Level 2
+        game_over = False  # Reset game state for the next level
+        return  # Skip the rest of the function since the game continues
+    elif winner and level == 2:
+        # Transition to Level 3
+        show_level3_screen()  # Display Level 3 transition screen
+        blade_guy.hp = 3  # Restore Blade Guy's HP
+        level += 1  # Increment the level
+        blade_guy.increase_speed(level)  # Activate speed boost for Level 3
+        game_over = False  # Reset game state for the next level
+        return  # Skip the rest of the function since the game continues
+    elif winner and level == 3:
+        # Transition to Level 3
+        show_level4_screen()  # Display Level 4 transition screen
+        blade_guy.hp = 3  # Restore Blade Guy's HP
+        level += 1  # Increment the level
+        blade_guy.increase_speed(level)  # Activate speed boost for Level 3
         game_over = False  # Reset game state for the next level
         return  # Skip the rest of the function since the game continues
     else:

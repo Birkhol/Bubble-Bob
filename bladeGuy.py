@@ -1,6 +1,7 @@
 import random
 import pygame
 
+from gameState import level
 from blade import Blade
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH, WHITE
 
@@ -13,23 +14,20 @@ class BladeGuy(pygame.sprite.Sprite):
         self.image.set_colorkey(WHITE)
         self.rect = self.image.get_rect(center=(SCREEN_WIDTH - 50, SCREEN_HEIGHT // 2))
         self.direction = 1
-        self.speed = 3  # Base speed for movement
         self.change_direction_timer = 0  # Timer for changing direction
         self.hp = 3
-        self.speed_boost = False 
+        self.speed = 2 # default speed
+        self.speed_boost = 0 # Extra speed per level
 
     def update(self):
+
         # Randomly change direction and speed every 30 frames
         if self.change_direction_timer <= 0:
             self.direction = random.choice([-1, 1])  # Randomly choose up or down
-            if self.speed_boost:
-                self.speed = random.randint(5, 10)  # Increased speed range
-            else:
-                self.speed = random.randint(2, 5)
-            # self.speed = random.randint(2, 5)  # Random speed between 2 and 5
+            self.speed = random.randint(2, 5)
             self.change_direction_timer = random.randint(30, 60)  # Random time for next direction change
 
-        self.rect.y += self.direction * self.speed
+        self.rect.y += self.direction * (self.speed + self.speed_boost)
         self.change_direction_timer -= 1  # Decrease timer
 
         # Prevent BladeGuy from moving off-screen
@@ -42,6 +40,13 @@ class BladeGuy(pygame.sprite.Sprite):
 
     def shoot_blade(self):
         return Blade(self.rect.centerx, self.rect.centery)
-    def increase_speed(self):
+    def increase_speed(self, current_level):
         """Increase Blade Guy's movement speed."""
-        self.speed_boost = True
+        if current_level == 1:
+            self.speed_boost = 3  # Increased speed range
+        elif current_level == 2:
+            self.speed_boost = 6  # Increased speed range
+        elif current_level == 3:
+            self.speed_boost = 11  # Increased speed range
+        elif current_level >= 4:
+            self.speed_boost = 16
